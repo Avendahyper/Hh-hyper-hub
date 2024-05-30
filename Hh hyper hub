@@ -1,0 +1,557 @@
+
+local kavoUi = loadstring(game:HttpGet("https://pastebin.com/raw/vff1bQ9F"))()
+local window = kavoUi.CreateLib("HH","BloodTheme")
+
+local Player = game.Players.LocalPlayer
+local generatingFrjuans = false
+
+local general = window:CreateTab("General")
+local war = window:CreateTab("War")
+local misc = window:CreateTab("Misc")
+local visual = window:CreateTab("Visuals")
+local frjuans = window:CreateTab("Frjuans")
+local credit = window:CreateTab("Credits")
+
+--General
+local toolsSector = general:CreateSector("Tools", "left")
+local creatureSector = general:CreateSector("Creatures", "left")
+local tpSector = general:CreateSector("Waypoints", "right")
+local mJuice = {}
+local rPoison = {}
+
+function isFilesFound()
+    for i,v in pairs(game.Workspace:GetChildren()) do
+        if v.Name == "classified files" and v:FindFirstChild("Handle") then
+            return true
+        end
+    end
+    return false
+end
+
+toolsSector:AddButton("Pick up all Classified Files", function()
+    if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+        if isFilesFound() then
+            for i,v in pairs(game.Workspace:GetChildren()) do
+                if v.Name == "classified files" and v:FindFirstChild("Handle") then
+                    firetouchinterest(v.Handle, game.Players.LocalPlayer.Character.HumanoidRootPart, 0)
+                end
+            end
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "har har:";
+                Text = "No classified files found.";
+                Duration = 2;
+            })
+        end
+    end
+end)
+
+local loopPickUp = false
+toolsSector:AddToggle("Auto pick up files", false, function(State)
+    loopPickUp = State
+end)
+
+spawn(function()
+    while task.wait() do
+        if loopPickUp then
+            for i,v in pairs(game.Workspace:GetChildren()) do
+                if v.Name == "classified files" and v:FindFirstChild("Handle") then
+                    firetouchinterest(v.Handle, game.Players.LocalPlayer.Character.HumanoidRootPart, 0)
+                end
+            end
+        end
+    end
+end)
+
+toolsSector:AddButton("Sell all Classified Files", function()
+    if Player.Character:FindFirstChild("classified files") or Player.Backpack:FindFirstChild("classified files") then
+        for _, v in ipairs(Player.Backpack:GetChildren()) do
+            if v.Name == "classified files" then
+                 v.Parent = Player.Character
+            end
+        end
+        for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+            if v.Name == "classified files" then
+                firetouchinterest(v.Handle ,game:GetService("Workspace").contrabandman.Head, 0)
+            end
+        end
+    else
+        game.StarterGui:SetCore("SendNotification", {
+            Title = “skibidi:";
+            Text = "No classified files in inventory.";
+            Duration = 2;
+        })
+    end
+end)
+
+local loopSell = false
+toolsSector:AddToggle("Auto sell files", false, function(State)
+    loopSell = State
+end)
+
+spawn(function()
+    while task.wait() do
+        if loopSell then
+            for _, v in ipairs(Player.Backpack:GetChildren()) do
+                if v.Name == "classified files" then
+                    v.Parent = Player.Character
+                end
+            end
+            for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                if v.Name == "classified files" then
+                    firetouchinterest(v.Handle ,game:GetService("Workspace").contrabandman.Head, 0)
+                end
+            end
+        end
+    end
+end)
+
+function getMedicalJuice()
+    for i,v in pairs(game.Workspace:GetChildren()) do
+        if v.Name == "medical box" then
+            fireclickdetector(v.fridgedoor.doorhandle.ClickDetector, 0)
+            wait(.1)
+            firetouchinterest(Player.Character.HumanoidRootPart, v.spawnpoint, 0)
+        end
+    end
+    wait(.2)
+    for i,v in pairs(game.Workspace:GetChildren()) do
+        if v.Name == "Medical juice" then
+            firetouchinterest(v.Handle, Player.Character.HumanoidRootPart, 0)
+            return true
+        end
+    end
+    game.StarterGui:SetCore("SendNotification", {
+        Title = “grizzla:";
+        Text = "No medical juice found.";
+        Duration = 2;
+    })
+    return false
+end
+
+function getRatPoison()
+    for i,v in pairs(game.Workspace:GetChildren()) do
+        if v.Name == "medical box" then
+            fireclickdetector(v.fridgedoor.doorhandle.ClickDetector, 0)
+            wait(.1)
+            firetouchinterest(Player.Character.HumanoidRootPart, v.spawnpoint, 0)
+        end
+    end
+    wait(.2)
+    for i,v in pairs(game.Workspace:GetChildren()) do
+        if v.Name == "Rat poison" then
+            firetouchinterest(v.Handle, Player.Character.HumanoidRootPart, 0)
+            return true
+        end
+    end
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "huh:";
+        Text = "No rat poison found.";
+        Duration = 2;
+    })
+    return false
+end
+
+local pickingUpMedicalJuice = false
+toolsSector:AddButton("Pick up all Medical Juice", function()
+    if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") and not pickingUpMedicalJuice then
+        pickingUpMedicalJuice = true
+        for i,v in pairs(game.Workspace:GetDescendants()) do
+            if v.Name == "Medical juice" then
+                table.insert(mJuice, v)
+            end
+        end
+        if mJuice[1] then
+            for i = 1,#mJuice do
+                getMedicalJuice()
+            end
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "no like seriously what:";
+                Text = "No medical juice found.";
+                Duration = 2;
+            })
+        end
+        mJuice = {}
+        wait(.2)
+        pickingUpMedicalJuice = false
+    end
+end)
+
+local pickingUpRatPoison = false
+toolsSector:AddButton("Pick up all Rat Poison", function()
+    if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") and not pickingUpRatPoison then
+        pickingUpRatPoison = true
+        for i,v in pairs(game.Workspace:GetDescendants()) do
+            if v.Name == "Rat poison" then
+                table.insert(rPoison, v)
+            end
+        end
+        if rPoison[1] then
+            for i = 1,#rPoison do
+                getRatPoison()
+            end
+        else
+            game.StarterGui:SetCore("SendNotification", {
+                Title = "🌸 Sakura System:";
+                Text = "No rat poison found.";
+                Duration = 2;
+            })
+        end
+        rPoison = {}
+        pickingUpRatPoison = false
+    end
+end)
+
+toolsSector:AddButton("Pick up all tools", function()
+    if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+        for i,v in pairs(game.Workspace:GetChildren()) do
+            if v:IsA("Tool") and v:FindFirstChild("Handle") then
+                firetouchinterest(v.Handle, game.Players.LocalPlayer.Character.HumanoidRootPart, 0)
+            end
+        end
+    end
+end)
+
+if isnetworkowner then
+    local repelCreatures = false
+    creatureSector:AddToggle("Creature repellent", false, function(State)
+        repelCreatures = State
+    end)
+
+    spawn(function()
+        while task.wait() do
+            if repelCreatures then
+                for i,v in pairs(game.Workspace:GetChildren()) do
+                    if v:FindFirstChild("NonHumanoid") and v:FindFirstChild("HumanoidRootPart") and isnetworkowner(v.PrimaryPart) and v.Name ~= "Former" and repelCreatures and not v.PrimaryPart:FindFirstChild("BodyVelocity") then
+                        spawn(function()
+                            local bv = Instance.new("BodyVelocity", v.PrimaryPart)
+                            bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                            bv.Velocity = Vector3.new(math.random(-50,50),30,math.random(-50,50))
+                            wait(2)
+                            if v:FindFirstChild("BodyVelocity") then
+                                bv:Destroy()
+                            end
+                        end)
+                    end
+                end
+                for i,v in pairs(game.Workspace.zombies:GetChildren()) do
+                    if v:FindFirstChild("NonHumanoid") and v:FindFirstChild("HumanoidRootPart") and isnetworkowner(v.PrimaryPart) and repelCreatures and not v.PrimaryPart:FindFirstChild("BodyVelocity") then
+                        spawn(function()
+                            local bv = Instance.new("BodyVelocity", v.PrimaryPart)
+                            bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                            bv.Velocity = Vector3.new(math.random(-50,50),30,math.random(-50,50))
+                            wait(2)
+                            if v:FindFirstChild("BodyVelocity") then
+                                bv:Destroy()
+                            end
+                        end)
+                    end
+                end
+                for i,v in pairs(game.Workspace.invpeople:GetChildren()) do
+                    if v:FindFirstChild("NonHumanoid") and v:FindFirstChild("HumanoidRootPart") and isnetworkowner(v.PrimaryPart) and repelCreatures and not v.PrimaryPart:FindFirstChild("BodyVelocity") then
+                        spawn(function()
+                            local bv = Instance.new("BodyVelocity", v.PrimaryPart)
+                            bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                            bv.Velocity = Vector3.new(math.random(-50,50),30,math.random(-50,50))
+                            wait(2)
+                            if v:FindFirstChild("BodyVelocity") then
+                                bv:Destroy()
+                            end
+                        end)
+                    end
+                end
+            end
+        end
+    end)
+
+    local disableCreatures = false
+    creatureSector:AddToggle("Disable creatures", false, function(State)
+        disableCreatures = State
+    end)
+
+    spawn(function()
+        while task.wait() do
+            if disableCreatures then
+                for i,v in pairs(game.Workspace:GetChildren()) do
+                    if v:FindFirstChild("NonHumanoid") and v:FindFirstChild("HumanoidRootPart") and isnetworkowner(v.PrimaryPart) then
+                        v.HumanoidRootPart:Destroy()
+                    end
+                end
+                for i,v in pairs(game.Workspace.zombies:GetChildren()) do
+                    if v:FindFirstChild("NonHumanoid") and v:FindFirstChild("HumanoidRootPart") and isnetworkowner(v.PrimaryPart) then
+                        v.HumanoidRootPart:Destroy()
+                    end
+                end
+                for i,v in pairs(game.Workspace.invpeople:GetChildren()) do
+                    if v:FindFirstChild("NonHumanoid") and v:FindFirstChild("HumanoidRootPart") and isnetworkowner(v.PrimaryPart) then
+                        v.HumanoidRootPart:Destroy()
+                    end
+                end
+            end
+        end
+    end)
+
+    local autoKillCreatures = false
+    creatureSector:AddToggle("Instant-kill creatures", false, function(State)
+        autoKillCreatures = State
+    end)
+
+    spawn(function()
+        while task.wait() do
+            if autoKillCreatures then
+                for i,v in pairs(game.Workspace:GetChildren()) do
+                    if v:FindFirstChild("NonHumanoid") and v:FindFirstChild("Head") and isnetworkowner(v.PrimaryPart) then
+                        v.Head:Destroy()
+                    end
+                end
+                for i,v in pairs(game.Workspace.invpeople:GetChildren()) do
+                    if v:FindFirstChild("NonHumanoid") and v:FindFirstChild("Head") and isnetworkowner(v.PrimaryPart) then
+                        v.Head:Destroy()
+                    end
+                end
+                for i,v in pairs(game.Workspace.zombies:GetChildren()) do
+                    if v:FindFirstChild("NonHumanoid") and v:FindFirstChild("Head") and isnetworkowner(v.PrimaryPart) then
+                        v.Head:Destroy()
+                    end
+                end
+            end
+        end
+    end)
+else
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "🌸 Sakura System:";
+        Text = "Cannot load creature exploits. Incompatible executer";
+        Duration = 2;
+    })
+end
+
+--Waypoints
+local teleporting = false
+
+function teleport(vector)
+    teleporting = true
+    --var declare:
+    local TweenService = game:GetService("TweenService")
+    local tpspeed = 70
+    local originWS = Player.Character.Humanoid.WalkSpeed
+
+    --Stabilize:
+    local bv = Instance.new("BodyVelocity", Player.Character.HumanoidRootPart)
+    bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+    bv.Velocity = Vector3.new(0,0,0)
+    Player.Character.Humanoid.PlatformStand = true
+
+    --Down:
+    local twn = TweenService:Create(Player.Character.HumanoidRootPart, TweenInfo.new((Player.Character.HumanoidRootPart.Position - Vector3.new(Player.Character.HumanoidRootPart.Position.X, Player.Character.HumanoidRootPart.Position.Y - 200, Player.Character.HumanoidRootPart.Position.Z)).Magnitude / tpspeed, Enum.EasingStyle.Linear), {CFrame = CFrame.new(Vector3.new(Player.Character.HumanoidRootPart.Position.X, Player.Character.HumanoidRootPart.Position.Y - 200, Player.Character.HumanoidRootPart.Position.Z))})
+    twn:Play()
+    twn.Completed:Wait()
+
+    --X,Z:
+    local twn1 = TweenService:Create(Player.Character.HumanoidRootPart, TweenInfo.new((Player.Character.HumanoidRootPart.Position - Vector3.new(vector.X, Player.Character.HumanoidRootPart.Position.Y, vector.Z)).Magnitude / tpspeed, Enum.EasingStyle.Linear), {CFrame = CFrame.new(Vector3.new(vector.X, Player.Character.HumanoidRootPart.Position.Y, vector.Z))})
+    twn1:Play()
+    twn1.Completed:Wait()
+
+    --Up:
+    local twn2 = TweenService:Create(Player.Character.HumanoidRootPart, TweenInfo.new((Player.Character.HumanoidRootPart.Position - vector).Magnitude / tpspeed, Enum.EasingStyle.Linear), {CFrame = CFrame.new(vector)})
+    twn2:Play()
+    twn2.Completed:Wait()
+
+    --Unstabilize:
+    bv:Destroy()
+    Player.Character.Humanoid.PlatformStand = false
+    Player.Character.Humanoid.WalkSpeed = originWS
+    teleporting = false
+end
+
+tpSector:AddButton("Manager room", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(-256, -62, 31))
+    end
+end)
+
+tpSector:AddButton("Truck", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(317, -4, 8))
+    end
+end)
+
+tpSector:AddButton("Stairs", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(-370, -62, -141))
+    end
+end)
+
+tpSector:AddButton("Freezer", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(-304, 8, 66))
+    end
+end)
+
+tpSector:AddButton("Boiler room", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(-256, 29, -101))
+    end
+end)
+
+tpSector:AddButton("Kid area", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(-268, 17, -67))
+    end
+end)
+
+tpSector:AddButton("Garage", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(-334, 3, 160))
+    end
+end)
+
+tpSector:AddButton("Restroom", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(-210, 8, -29))
+    end
+end)
+
+tpSector:AddButton("Sewer", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(-181, -13, 51))
+    end
+end)
+
+tpSector:AddButton("Death ray area", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(256, -111, -47))
+    end
+end)
+
+tpSector:AddButton("Pump-A", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(-5, -121, -131))
+    end
+end)
+
+tpSector:AddButton("Pump-B", function()
+    if Player.Character and Player.Character.HumanoidRootPart and not teleporting then
+        teleport(Vector3.new(-79, -121, 154))
+    end
+end)
+
+--War
+--Weapons
+local weapons = war:CreateSector("Contraband Shop", "left")
+local death = war:CreateSector("Assassination", "right")
+local deathTools = war:CreateSector("Utilities", "right")
+
+--Sort Alphabetically
+local tb1 = {}
+local i1 = 0
+
+for i,v in pairs(Player.PlayerGui.tradegui:GetChildren()) do
+    if v:IsA("TextButton") and v.Name ~= "Xbutton" then
+        table.insert(tb1, v.Name)
+        i1 = i1 + 1
+    end
+end
+
+table.sort(tb1, function(a,b)
+	return a:split("purchase")[2]:lower() < b:split("purchase")[2]:lower()
+end)
+
+for j = 1,i1 do
+    for i,v in pairs(Player.PlayerGui.tradegui:GetChildren()) do
+        if v:IsA("TextButton") and v.Name ~= "Xbutton" and v.Name == tb1[j] then
+            weapons:AddButton(v.Text, function()
+                Player.PlayerGui.buysomething:FireServer(j)
+            end)
+        end
+    end
+end
+
+--Assassination
+local target
+local txtbox
+
+--Prelim loader to store punch in nil
+local tempPunchStorage = {}
+local mt = getrawmetatable(game)
+local ncOriginal = mt.__namecall
+setreadonly(mt, false)
+
+mt.__namecall = newcclosure(function(self, ...)
+    local method = getnamecallmethod()
+    
+    if method == "FireServer" and ... == game.Teams.Customers and not generatingFrjuans then
+        for i = 1,30 do
+            Player.PlayerGui.clicke:FireServer(game.Teams.Choosing)
+        end
+    end
+    return ncOriginal(self, ...)
+end)
+
+--Prelim detection
+local prelimBackpackAdd
+prelimBackpackAdd = Player.Backpack.ChildAdded:connect(function(obj)
+    if not generatingFrjuans then
+        task.wait()
+        if obj.Name == "punch" and #tempPunchStorage < 30 then
+            print(#tempPunchStorage)
+            table.insert(tempPunchStorage, obj)
+            obj.Parent = nil
+        else
+            local tempPunch = Player.Backpack.punch
+            tempPunch.Parent = nil
+            prelimBackpackAdd:Disconnect()
+            prelimBackpackAdd = nil
+            tempPunch.Parent = Player.Backpack
+        end
+    end
+end)
+
+--Error catch
+spawn(function()
+    if not generatingFrjuans then
+        repeat task.wait() until #tempPunchStorage == 29
+        local count = 0
+        for i,v in pairs(Player.Backpack:GetChildren()) do
+            if v.Name == "punch" then
+                count = count + 1
+            end
+        end
+        if count > 1 then
+            for i = 1, count - 1 do
+                local tempPunch = Player.Backpack.punch
+                table.insert(tempPunchStorage, tempPunch)
+                tempPunch.Parent = nil
+            end
+        end
+    end
+end)
+
+--Refresh table when character die
+Player.Character.Humanoid.Died:connect(function()
+    tempPunchStorage = {}
+end)
+
+--When die refresh detection
+Player.CharacterAdded:connect(function(char)
+    --Store punch tools in nil. Visual sake.
+    local prelimBackpackAdd2
+    prelimBackpackAdd2 = Player.Backpack.ChildAdded:connect(function(obj)
+        if not generatingFrjuans then
+            task.wait()
+            if obj.Name == "punch" and #tempPunchStorage < 30 then
+                print(#tempPunchStorage)
+                table.insert(tempPunchStorage, obj)
+                obj.Parent = nil
+            else
+                local tempPunch = Player.Backpack.punch
+                tempPunch.Parent = nil
+                prelimBackpackAdd2:Disconnect()
+                prelimBackpackAdd2 = nil
+                tempPunch.Parent = Player.Backpack
+            end
+        end
+    end)
+
+    --Error catch
+    spawn(function()
